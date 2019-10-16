@@ -51,3 +51,24 @@ confirmacaoHandler.action('n', ctx => {
 })
 
 confirmacaoHandler.use(ctx => ctx.reply('Apenas confirme', confirmacao))
+
+const wizardCompra = new WizardScene('compra', 
+    ctx => {
+        ctx.reply('O que você comprou?')
+        ctx.wizard.next()
+    },
+    ctx => {
+        descricao = ctx.update.message.text
+        ctx.reply('Quanto foi?')
+        ctx.wizard.next()
+    },
+    precoHandler,
+    dataHandler,
+    confirmacaoHandler
+)
+
+const stage = new Stage([wizardCompra], {default: 'compra'})
+bot.use(session())
+bot.use(stage.middleware())
+
+bot.startPolling()
